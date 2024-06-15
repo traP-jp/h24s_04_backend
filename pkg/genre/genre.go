@@ -96,6 +96,18 @@ func (s *GenreService) PatchGenresGenreid(ctx echo.Context) error {
 
 }
 
-// func (s *GenreService) DeleteGenresGenreid(ctx echo.Context) error {
-
-// }
+func (s *GenreService) DeleteGenresGenreid(ctx echo.Context) error {
+	genreid := ctx.Param("genreid")
+	var res model.Genre
+	err := s.db.Get(&res, "SELECT * FROM `Genre` WHERE `id` = ?", genreid)
+	if errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("%+v", err))
+	} else if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+	_, err = s.db.Exec("DELETE FROM `Genre` WHERE `id` = ?", genreid)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+	return ctx.JSON(http.StatusOK, res)
+}
