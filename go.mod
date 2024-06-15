@@ -1,4 +1,4 @@
-module h24_04
+module h24s_04
 
 go 1.20
 

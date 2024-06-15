@@ -1,7 +1,7 @@
 package main
 
 import (
-	"h24_04/pkg/_ping"
+	"h24s_04/pkg/_ping"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
