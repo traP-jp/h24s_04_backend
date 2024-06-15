@@ -1,7 +1,9 @@
 package main
 
 import (
-	"h24s_04/pkg/_ping"
+	ping "h24s_04/pkg/_ping"
+	"h24s_04/pkg/genre"
+	"h24s_04/pkg/setup"
 
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -9,11 +11,18 @@ import (
 
 func main() {
 
+	_db := setup.DBsetup()
+
+	gs := genre.Service(_db)
+	//ss := slide.Service(_db)
+
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.GET("/ping", ping.Ping)
+
+	e.POST("/genres", gs.PostGenres)
 
 	e.Start(":8080")
 }
