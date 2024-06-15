@@ -31,6 +31,7 @@ func main() {
 	e.DELETE("/genres/:genreid", gs.DeleteGenresGenreid)
 
 	e.GET("slides/:slideid", ss.GetSlidesSlideid)
+	e.DELETE("slides/:slideid", ss.DeleteSlidesSlideid)
 
 	e.Start(":8080")
 }
