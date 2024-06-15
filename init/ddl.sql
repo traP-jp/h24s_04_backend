@@ -16,8 +16,8 @@ CREATE TABLE
     dl_url TEXT NOT NULL,
     thumb_url TEXT,
     title TEXT NOT NULL,
-    genreid CHAR(36) NOT NULL,
+    genre_id CHAR(36) NOT NULL,
     FOREIGN KEY (genreid) REFERENCES Genre (id),
-    registered_at DATETIME NOT NULL,
+    posted_at DATETIME NOT NULL,
     description TEXT
   );
