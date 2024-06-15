@@ -26,5 +26,8 @@ func main() {
 	e.GET("/genres/:genreid", gs.GetGenresGenreid)
 	e.GET("/genres", gs.GetGenres)
 
+	e.PATCH("/genres/:genreid", gs.PatchGenresGenreid)
+
+
 	e.Start(":8080")
 }
