@@ -1,3 +1,5 @@
+USE h24s_04
+
 INSERT INTO Genre (id, genrename) VALUES ("628","noya2");
 INSERT INTO Slide (id, dl_url, thumb_url, title, genre_id, posted_at, description) VALUES ("628","dl_url628","thumb_url628","noya2-slide","628", NOW(),"traq-id");
 
