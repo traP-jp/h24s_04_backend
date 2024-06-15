@@ -22,35 +22,14 @@ func Service(db *sqlx.DB) *SlideService {
 func (s *SlideService) GetSlides(ctx echo.Context) error {
 	var slides []model.Slide
 	orderby := ctx.QueryParam("orderby")
-	sortorder := ctx.QueryParam("sortorder")
-	var err error
-	if orderby == "genre_id" {
-		if sortorder == "" || sortorder == "ASC" {
-			err = s.db.Select(&slides, "SELECT * FROM `Slide` ORDER BY genre_id ASC")
-		} else if sortorder == "DESC" {
-			err = s.db.Select(&slides, "SELECT * FROM `Slide` ORDER BY genre_id DESC")
-		} else {
-			return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
-		}
-	} else if orderby == "title" {
-		if sortorder == "" || sortorder == "ASC" {
-			err = s.db.Select(&slides, "SELECT * FROM `Slide` ORDER BY title ASC")
-		} else if sortorder == "DESC" {
-			err = s.db.Select(&slides, "SELECT * FROM `Slide` ORDER BY title DESC")
-		} else {
-			return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
-		}
-	} else if orderby == "posted_at" {
-		if sortorder == "" || sortorder == "ASC" {
-			err = s.db.Select(&slides, "SELECT * FROM `Slide` ORDER BY posted_at ASC")
-		} else if sortorder == "DESC" {
-			err = s.db.Select(&slides, "SELECT * FROM `Slide` ORDER BY posted_at DESC")
-		} else {
-			return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
-		}
-	} else {
-		echo.NewHTTPError(http.StatusBadRequest, "`orderby` must equals `genre_id`, `title` or `posted_at`.")
+	if orderby != "genre_id" && orderby != "title" && orderby != "posted_at" && orderby != "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "`orderby` must equals `genre_id`, `title`, `posted_at` or ``.")
 	}
+	sortorder := ctx.QueryParam("sortorder")
+	if sortorder != "ASC" && sortorder != "DESC" && sortorder != "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
+	}
+	err := s.db.Select(&slides, fmt.Sprintf("SELECT * FROM `Slide` ORDER BY %s %s", orderby, sortorder))
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
