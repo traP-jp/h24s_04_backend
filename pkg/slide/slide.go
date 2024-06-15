@@ -75,11 +75,11 @@ func (s *SlideService) PatchSlidesSlideid(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
 
-	res.DL_url = req.DL_url
-	res.Thumb_url = req.Thumb_url
-	res.Title = req.Title
-	res.Genre_id = req.Genre_id
-	res.Description = req.Description
+	err = s.db.Get(&res, "SELECT * FROM `Slide` WHERE `id` = ?", slideid)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
 
 	return ctx.JSON(http.StatusOK, res)
 }
