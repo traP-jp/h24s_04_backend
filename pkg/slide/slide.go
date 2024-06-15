@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"h24s_04/pkg/model"
-	"log"
 	"net/http"
 	"time"
 
