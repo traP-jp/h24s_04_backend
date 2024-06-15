@@ -24,6 +24,7 @@ func main() {
 
 	e.POST("/genres", gs.PostGenres)
 	e.GET("/genres/:genreid", gs.GetGenresGenreid)
+	e.GET("/genres", gs.GetGenres)
 
 	e.Start(":8080")
 }
