@@ -22,8 +22,6 @@ func Service(db *sqlx.DB) *GenreService {
 }
 
 func (s *GenreService) GetGenres(ctx echo.Context) error {
-	// var genres []model.Genre みたいに定義してくれれば
-	// ジャンル一覧を返す jsonに入れればできそう
 	var genres []model.Genre
 	err := s.db.Select(&genres, "SELECT * FROM `Genre`")
 	if err != nil {
