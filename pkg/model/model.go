@@ -12,7 +12,7 @@ import (
 type Slide struct {
 	Id          uuid.UUID         `json:"id,omitempty"  db:"id"`
 	DL_url      string         `json:"dl_url,omitempty"  db:"dl_url"`
-	Thumb_url   sql.NullString `json:"thumb_url,omitempty"  db:"thumb"`
+	Thumb_url   sql.NullString `json:"thumb_url,omitempty"  db:"thumb_url"`
 	Title       string         `json:"title,omitempty"  db:"title"`
 	Genre_id    uuid.UUID         `json:"genre_id,omitempty"  db:"genre_id"`
 	Posted_at   time.Time      `json:"posted_at,omitempty"  db:"posted_at"`
