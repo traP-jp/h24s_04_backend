@@ -1,6 +1,8 @@
 package genre
 
 import (
+	"database/sql"
+	"errors"
 	"fmt"
 	"h24s_04/pkg/model"
 	"net/http"
@@ -48,9 +50,18 @@ func (s *GenreService) PostGenres(ctx echo.Context) error {
 
 }
 
-// func (s *GenreService) GetGenresGenreid(ctx echo.Context) error {
-
-// }
+func (s *GenreService) GetGenresGenreid(ctx echo.Context) error {
+	genreid := ctx.QueryParam("genreid")
+	var genre model.Genre
+	err := s.db.Get(&genre, "SELECT * FROM Genre WHERE id = ?", genreid)
+	if errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("%+v", err))
+	}
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+	return ctx.JSON(http.StatusOK, genre)
+}
 
 // func (s *GenreService) PatchGenresGenreid(ctx echo.Context) error {
 
