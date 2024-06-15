@@ -3,7 +3,9 @@ package firebase
 import (
 	"context"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"time"
 
 	cs "cloud.google.com/go/storage"
@@ -79,4 +81,35 @@ func (fs *FirebaseStorage) generateSignedURL(ctx context.Context, bucketName, ob
 	fmt.Printf("Generated GET signed URL:\n%s\n", u)
 
 	return u, nil
+}
+
+func (fs *FirebaseStorage) Download(ctx context.Context, bucketName string, objectName string, destFileName string) error {
+
+	f, err := os.Create(destFileName)
+	if err != nil {
+		return fmt.Errorf("os.Create: %w", err)
+	}
+
+	bh, err := fs.Client.Bucket(bucketName)
+	if err != nil {
+		return fmt.Errorf("Bucket(%q): %w", bucketName, err)
+	}
+
+	rc, err := bh.Object(objectName).NewReader(ctx)
+	if err != nil {
+		return fmt.Errorf("Object(%q).NewReader: %w", objectName, err)
+	}
+
+	defer rc.Close()
+
+	if _, err := io.Copy(f, rc); err != nil {
+		return fmt.Errorf("io.Copy: %w", err)
+	}
+
+	if err = f.Close(); err != nil {
+		return fmt.Errorf("f.Close: %w", err)
+	}
+
+	return nil
+
 }

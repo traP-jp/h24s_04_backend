@@ -46,3 +46,9 @@ func (h *transferFileService) UploadFile(ctx echo.Context) error {
 
 	return ctx.String(http.StatusOK, url)
 }
+
+func (h *transferFileService) DownloadFile(ctx echo.Context) error {
+	
+	err:=h.uu.DownloadFile(ctx.Request().Context(),)
+	return ctx.String(http.StatusOK,filename)
+}
