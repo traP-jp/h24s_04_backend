@@ -23,6 +23,7 @@ func main() {
 	e.GET("/ping", ping.Ping)
 
 	e.POST("/genres", gs.PostGenres)
+	e.GET("/genres/:genreid", gs.GetGenresGenreid)
 
 	e.Start(":8080")
 }
