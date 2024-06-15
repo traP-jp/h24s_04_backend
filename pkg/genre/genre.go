@@ -63,9 +63,35 @@ func (s *GenreService) GetGenresGenreid(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, genre)
 }
 
-// func (s *GenreService) PatchGenresGenreid(ctx echo.Context) error {
+func (s *GenreService) PatchGenresGenreid(ctx echo.Context) error {
 
-// }
+	genreid := ctx.Param("genreid")
+	res := &model.Genre{}
+
+	err := s.db.Get(res, "SELECT * FROM `Genre` WHERE `id`=?", genreid)
+	if errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("%+v", err))
+	} else if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+
+	req := &model.Genre{}
+
+	err = ctx.Bind(req)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
+	}
+
+	_, err = s.db.Exec("UPDATE `Genre` SET `genrename`=? WHERE `id`=?", req.Genre_name, genreid)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+
+	res.Genre_name = req.Genre_name
+
+	return ctx.JSON(http.StatusOK, res)
+
+}
 
 // func (s *GenreService) DeleteGenresGenreid(ctx echo.Context) error {
 
