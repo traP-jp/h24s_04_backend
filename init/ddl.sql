@@ -17,7 +17,7 @@ CREATE TABLE
     thumb_url TEXT,
     title TEXT NOT NULL,
     genre_id CHAR(36) NOT NULL,
-    FOREIGN KEY (genreid) REFERENCES Genre (id),
+    FOREIGN KEY (genre_id) REFERENCES Genre (id),
     posted_at DATETIME NOT NULL,
     description TEXT
   );
