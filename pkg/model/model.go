@@ -1,11 +1,12 @@
 package model
 
+
 import (
 	"database/sql"
 	"time"
 )
 
-// db.imageを参考にslides structとgenre structを書いて欲しいです(nullとかも反映させてくださると:tasukaru:)
+// image.pngを参考にslides structとgenre structを書いて欲しいです(nullとかも反映させてくださると:tasukaru:)
 
 type Slide struct {
 	id          string         `json:"id,omitempty"  db:"id"`
