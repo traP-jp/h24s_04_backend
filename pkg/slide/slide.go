@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"h24s_04/pkg/model"
 	"net/http"
+	"time"
 
+	"github.com/gofrs/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 )
@@ -36,11 +38,26 @@ func (s *SlideService) GetSlides(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, slides)
 }
 
-// func (s *SlideService) PostSlides(ctx echo.Context) error {
-// 	// var slide *model.Slide とctx.Bind(slide)してくれれば
-// 	// responseでpostしたslideを返す
+func (s *SlideService) PostSlides(ctx echo.Context) error {
+	slide := &model.Slide{}
+	err := ctx.Bind(slide)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
+	}
 
-// }
+	slide.Id, err = uuid.NewV7()
+	slide.Posted_at = time.Now()
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+
+	_, err = s.db.Exec("INSERT INTO `Slide` (`id`, `dl_url`, `thumb_url`, `title`, `genre_id`, `posted_at`, `description`) VALUES (?,?,?,?,?,?,?)", slide.Id, slide.DL_url, slide.Thumb_url, slide.Title, slide.Genre_id, slide.Posted_at, slide.Description)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+	return ctx.JSON(http.StatusOK, slide)
+}
 
 func (s *SlideService) GetSlidesSlideid(ctx echo.Context) error {
 	slideid := ctx.Param("slideid")
@@ -51,7 +68,7 @@ func (s *SlideService) GetSlidesSlideid(ctx echo.Context) error {
 	} else if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
-	return ctx.JSON(http.StatusOK, slide);
+	return ctx.JSON(http.StatusOK, slide)
 }
 
 func (s *SlideService) PatchSlidesSlideid(ctx echo.Context) error {
