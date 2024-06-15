@@ -34,10 +34,16 @@ func (s *GenreService) PostGenres(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
 	}
 
-	genre.Id = uuid.NewV7().String()
+	genre.Id, err = uuid.NewV7()
 
-	s.db.Exec("INSERT INTO `Genre` (`id`, `genrename`) VALUES (?,?)", genre.Id, genre.Genrename)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
 
+	_, err = s.db.Exec("INSERT INTO `Genre` (`id`, `genrename`) VALUES (?,?)", genre.Id, genre.Genre_name)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
 	return ctx.JSON(http.StatusOK, genre)
 
 }
