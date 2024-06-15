@@ -33,6 +33,8 @@ func main() {
 	e.GET("/slides/:slideid", ss.GetSlidesSlideid)
 	e.DELETE("/slides/:slideid", ss.DeleteSlidesSlideid)
 	e.GET("/slides", ss.GetSlides)
+	e.PATCH("slides/:slideid", ss.PatchSlidesSlideid)
+
 
 	e.Start(":8080")
 }

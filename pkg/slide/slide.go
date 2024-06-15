@@ -54,13 +54,35 @@ func (s *SlideService) GetSlidesSlideid(ctx echo.Context) error {
 	return ctx.JSON(http.StatusOK, slide);
 }
 
-// func (s *SlideService) PatchSlidesSlideid(ctx echo.Context) error {
+func (s *SlideService) PatchSlidesSlideid(ctx echo.Context) error {
+	slideid := ctx.Param("slideid")
+	var res model.Slide
+	err := s.db.Get(&res, "SELECT * FROM `Slide` WHERE `id` = ?", slideid)
+	if errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("%+v", err))
+	} else if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
 
-// }
+	req := &model.Slide{}
+	err = ctx.Bind(req)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
+	}
 
-// func (s *SlideService) PatchSlidesSlideid(ctx echo.Context) error {
+	_, err = s.db.Exec("UPDATE `Slide` SET `dl_url` = ?, `thumb_url` = ?, `title` = ?, `genre_id` = ?, `description` = ? WHERE `id` = ?", req.DL_url, req.Thumb_url, req.Title, req.Genre_id, req.Description, slideid)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
 
-// }
+	err = s.db.Get(&res, "SELECT * FROM `Slide` WHERE `id` = ?", slideid)
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+
+	return ctx.JSON(http.StatusOK, res)
+}
 
 func (s *SlideService) DeleteSlidesSlideid(ctx echo.Context) error {
 	slideid := ctx.Param("slideid")
