@@ -66,9 +66,9 @@ func (s *GenreService) GetGenresGenreid(ctx echo.Context) error {
 func (s *GenreService) PatchGenresGenreid(ctx echo.Context) error {
 
 	genreid := ctx.Param("genreid")
-	res := &model.Genre{}
+	var res model.Genre
 
-	err := s.db.Get(res, "SELECT * FROM `Genre` WHERE `id`=?", genreid)
+	err := s.db.Get(&res, "SELECT * FROM `Genre` WHERE `id`=?", genreid)
 	if errors.Is(err, sql.ErrNoRows) {
 		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("%+v", err))
 	} else if err != nil {
