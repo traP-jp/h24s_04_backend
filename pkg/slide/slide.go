@@ -48,6 +48,22 @@ func (s *SlideService) GetSlidesSlideid(ctx echo.Context) error {
 
 // }
 
-// func (s *SlideService) DeleteSlidesSlideid(ctx echo.Context) error {
+// func (s *SlideService) PatchSlidesSlideid(ctx echo.Context) error {
 
 // }
+
+func (s *SlideService) DeleteSlidesSlideid(ctx echo.Context) error {
+	slideid := ctx.Param("slideid")
+	var res model.Slide
+	err := s.db.Get(&res, "SELECT * FROM `Slide` WHERE `id` = ?", slideid)
+	if errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("%+v", err))
+	} else if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+	_, err = s.db.Exec("DELETE FROM `Slide` WHERE `id` = ?", slideid)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+	return ctx.JSON(http.StatusOK, res)
+}
