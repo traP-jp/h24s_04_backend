@@ -21,11 +21,14 @@ func Service(db *sqlx.DB) *GenreService {
 
 }
 
-// func (s *GenreService) GetGenres(ctx echo.Context) error {
-// 	// var genres []model.Genre みたいに定義してくれれば
-// 	// ジャンル一覧を返す jsonに入れればできそう
-
-// }
+func (s *GenreService) GetGenres(ctx echo.Context) error {
+	var genres []model.Genre
+	err := s.db.Select(&genres, "SELECT * FROM `Genre`")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+	return ctx.JSON(http.StatusOK, genres)
+}
 
 func (s *GenreService) PostGenres(ctx echo.Context) error {
 	// var genre *model.Genre みたいに定義してerr:=ctx.Bind(genre)みたいに
