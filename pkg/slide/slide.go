@@ -39,8 +39,6 @@ func (s *SlideService) GetSlides(ctx echo.Context) error {
 }
 
 func (s *SlideService) PostSlides(ctx echo.Context) error {
-	// var slide *model.Slide とctx.Bind(slide)してくれれば
-	// responseでpostしたslideを返す
 	slide := &model.Slide{}
 	err := ctx.Bind(slide)
 	if err != nil {
