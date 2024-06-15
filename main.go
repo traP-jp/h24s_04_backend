@@ -30,8 +30,9 @@ func main() {
 	e.PATCH("/genres/:genreid", gs.PatchGenresGenreid)
 	e.DELETE("/genres/:genreid", gs.DeleteGenresGenreid)
 
-	e.GET("slides/:slideid", ss.GetSlidesSlideid)
-	e.DELETE("slides/:slideid", ss.DeleteSlidesSlideid)
+	e.GET("/slides/:slideid", ss.GetSlidesSlideid)
+	e.DELETE("/slides/:slideid", ss.DeleteSlidesSlideid)
+	e.GET("/slides", ss.GetSlides)
 
 	e.Start(":8080")
 }

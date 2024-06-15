@@ -19,12 +19,22 @@ func Service(db *sqlx.DB) *SlideService {
 	return &SlideService{db: db}
 }
 
-// func (s *SlideService) GetSlides(ctx echo.Context) error {
-// 	// var slides []model.Slide みたいに定義してくれれば
-// 	// クエリパラメータを3つ(ジャンル,ソート順,ページ) 命名はそちらに任せます
-// 	// responseで検索対象のslides
-
-// }
+func (s *SlideService) GetSlides(ctx echo.Context) error {
+	var slides []model.Slide
+	orderby := ctx.QueryParam("orderby")
+	if orderby != "genre_id" && orderby != "title" && orderby != "posted_at" && orderby != "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "`orderby` must equals `genre_id`, `title`, `posted_at` or ``.")
+	}
+	sortorder := ctx.QueryParam("sortorder")
+	if sortorder != "ASC" && sortorder != "DESC" && sortorder != "" {
+		return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
+	}
+	err := s.db.Select(&slides, fmt.Sprintf("SELECT * FROM `Slide` ORDER BY %s %s", orderby, sortorder))
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+	return ctx.JSON(http.StatusOK, slides)
+}
 
 // func (s *SlideService) PostSlides(ctx echo.Context) error {
 // 	// var slide *model.Slide とctx.Bind(slide)してくれれば
