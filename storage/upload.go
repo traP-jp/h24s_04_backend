@@ -50,7 +50,7 @@ func (t *TransferFileService) UploadFile(ctx context.Context, fileData []byte, f
 		return "", "", fmt.Errorf("failed to upload image to Firebase Storage: %v", err)
 	}
 
-	return url, path, nil
+	return url, fileName, nil
 }
 
 func (t *TransferFileService) UpdateURL(filePath string) (string, error) {

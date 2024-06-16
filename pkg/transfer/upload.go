@@ -10,8 +10,9 @@ import (
 )
 
 type fileUploadResponse struct {
-	URL  string `json:"url"`
-	Path string `json:"path"`
+	DL_URL    string `json:"dl_url"`
+	Thumb_URL string `json:"thumb_url"`
+	Path      string `json:"path"`
 }
 
 type ITransferFileService interface {
@@ -47,13 +48,36 @@ func (h *transferFileService) UploadFile(ctx echo.Context) error {
 	}
 
 	fileName := file.Filename
-	url, path, err := h.uu.UploadFile(ctx.Request().Context(), fileData, fileName)
+	dl_url, path, err := h.uu.UploadFile(ctx.Request().Context(), fileData, fileName)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error uploading file: "+err.Error())
+	}
+
+	thumb, err := ctx.FormFile("thumb")
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "Invalid file")
+	}
+
+	src, err = thumb.Open()
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Could not open file")
+	}
+	defer src.Close()
+
+	thumbData, err := io.ReadAll(src)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Could not read file")
+	}
+
+	thumbName := ("thumb_" + fileName)
+	thumb_url, _, err := h.uu.UploadFile(ctx.Request().Context(), thumbData, thumbName)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error uploading file: "+err.Error())
 	}
 
 	res := &fileUploadResponse{}
-	res.URL = url
+	res.DL_URL = dl_url
+	res.Thumb_URL = thumb_url
 	res.Path = path
 
 	return ctx.JSON(http.StatusOK, res)
