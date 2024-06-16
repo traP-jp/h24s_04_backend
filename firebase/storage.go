@@ -49,7 +49,7 @@ func (fs *FirebaseStorage) Upload(ctx context.Context, bucketName string, fileDa
 	}
 
 	// 署名付きURLの生成
-	signedURL, err := fs.generateSignedURL(ctx, bucketName, path, 5) // 5年間有効
+	signedURL, err := fs.GenerateSignedURL(bucketName, path)
 	if err != nil {
 		return "", err
 	}
@@ -58,12 +58,12 @@ func (fs *FirebaseStorage) Upload(ctx context.Context, bucketName string, fileDa
 }
 
 // generateSignedURL 署名付きURLを生成
-func (fs *FirebaseStorage) generateSignedURL(ctx context.Context, bucketName, objectName string, expiry time.Duration) (string, error) {
+func (fs *FirebaseStorage) GenerateSignedURL(bucketName, objectName string) (string, error) {
 	// 署名付きURLのオプションを設定
 	opts := &cs.SignedURLOptions{
 		Scheme:  cs.SigningSchemeV4,
 		Method:  "GET",
-		Expires: time.Now().Add(15 * time.Minute), // 有効期限 7日間ごとに更新
+		Expires: time.Now().Add(167 * time.Hour), // 有効期限 7日間ごとに更新
 	}
 
 	// 署名付きURLを生成

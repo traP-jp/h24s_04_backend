@@ -8,8 +8,8 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/jmoiron/sqlx v1.4.0
-	github.com/joho/godotenv v1.5.1
 	github.com/labstack/echo/v4 v4.11.3
+	github.com/robfig/cron/v3 v3.0.1
 	google.golang.org/api v0.184.0
 )
 
