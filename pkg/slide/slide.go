@@ -24,11 +24,17 @@ func Service(db *sqlx.DB) *SlideService {
 func (s *SlideService) GetSlides(ctx echo.Context) error {
 	var slides []model.Slide
 	orderby := ctx.QueryParam("orderby")
-	if orderby != "genre_id" && orderby != "title" && orderby != "posted_at" && orderby != "" {
+	if orderby == "" {
+		orderby = "posted_at"
+	}
+	if orderby != "genre_id" && orderby != "title" && orderby != "posted_at" {
 		return echo.NewHTTPError(http.StatusBadRequest, "`orderby` must equals `genre_id`, `title`, `posted_at` or ``.")
 	}
 	sortorder := ctx.QueryParam("sortorder")
-	if sortorder != "ASC" && sortorder != "DESC" && sortorder != "" {
+	if sortorder == "" {
+		sortorder = "DESC"
+	}
+ 	if sortorder != "ASC" && sortorder != "DESC" && sortorder != "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
 	}
 	err := s.db.Select(&slides, fmt.Sprintf("SELECT * FROM `Slide` ORDER BY %s %s", orderby, sortorder))
