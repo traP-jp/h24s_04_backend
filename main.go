@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	ping "h24s_04/pkg/_ping"
+	"h24s_04/pkg/bot"
 	"h24s_04/pkg/genre"
 	"h24s_04/pkg/setup"
 
@@ -16,6 +17,8 @@ import (
 )
 
 func main() {
+
+	go bot.NewBot().Service()
 
 	_db := setup.DBsetup()
 
