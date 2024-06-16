@@ -60,7 +60,7 @@ func (t *TransferFileService) UpdateURL(filePath string) (string, error) {
 
 	url, err := t.storageClient.GenerateSignedURL(bucketName, filePath)
 	if err != nil {
-		return "", fmt.Errorf("failed to upload image to Firebase Storage: %v", err)
+		return "", fmt.Errorf("failed to get download url from Firebase Storage: %v", err)
 	}
 
 	return url, nil
