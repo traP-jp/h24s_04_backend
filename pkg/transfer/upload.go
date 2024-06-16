@@ -17,7 +17,7 @@ type transferFileService struct {
 }
 
 func Service(uu storage.ITransferFile) ITransferFileService {
-	return &transferFileService{uu}
+	return &transferFileService{uu: uu}
 }
 
 func (h *transferFileService) UploadFile(ctx echo.Context) error {

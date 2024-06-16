@@ -11,7 +11,6 @@ import (
 
 	"h24s_04/pkg/slide"
 
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -30,9 +29,6 @@ func main() {
 	}
 	tr := transfer.Service(uu)
 
-
-
-
 	e := echo.New()
 
 	e.Use(middleware.Logger())
@@ -46,17 +42,13 @@ func main() {
 	e.PATCH("/genres/:genreid", gs.PatchGenresGenreid)
 	e.DELETE("/genres/:genreid", gs.DeleteGenresGenreid)
 
-
-
-
 	e.GET("/slides/:slideid", ss.GetSlidesSlideid)
 	e.DELETE("/slides/:slideid", ss.DeleteSlidesSlideid)
 	e.GET("/slides", ss.GetSlides)
 	e.PATCH("/slides/:slideid", ss.PatchSlidesSlideid)
 	e.POST("/slides", ss.PostSlides)
 
-
-  e.POST("/upload", tr.UploadFile)
+	e.POST("/upload", tr.UploadFile)
 
 	e.Start(":8080")
 }
