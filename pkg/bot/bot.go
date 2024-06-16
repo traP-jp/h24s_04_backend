@@ -8,7 +8,7 @@ import (
 
 type BotService struct {
 	bot           *traqwsbot.Bot
-	postChannelID string // := "122c14e6-c32a-43b3-b905-d2aeb0c0a23e"
+	postChannelID string
 }
 
 func NewBot() *BotService {
@@ -18,7 +18,7 @@ func NewBot() *BotService {
 	if err != nil {
 		panic(err)
 	}
-	return &BotService{bot: bot, postChannelID: "122c14e6-c32a-43b3-b905-d2aeb0c0a23e"}
+	return &BotService{bot: bot, postChannelID: os.Getenv("BOT_POST_CHANNELID")}
 }
 
 func (s *BotService) Service() {
