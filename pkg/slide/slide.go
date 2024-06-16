@@ -44,7 +44,8 @@ func (s *SlideService) GetSlides(ctx echo.Context) error {
 		}
 	case "title":
 		title := ctx.QueryParam("title")
-		err := s.db.Select(&slides, "SELECT * FROM `Slide` WHERE `title` = ?", title)
+		title = "%" + title + "%" // 部分一致検索
+		err := s.db.Select(&slides, "SELECT * FROM `Slide` WHERE `title` LIKE ?", title)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 		}
