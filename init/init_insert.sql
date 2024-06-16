@@ -13,7 +13,8 @@ INSERT INTO
     genre_id,
     posted_at,
     description,
-    url_updated_at
+    url_updated_at,
+    filepath
   )
 VALUES
   (
@@ -24,7 +25,8 @@ VALUES
     "5ebb3054-7a0b-ad30-d02c-4bbf1f11d48e",
     NOW (),
     "traq-id",
-    NOW ()
+    NOW (),
+    "files/noya2-slide.pdf"
   );
 
 INSERT INTO
@@ -41,7 +43,8 @@ INSERT INTO
     genre_id,
     posted_at,
     description,
-    url_updated_at
+    url_updated_at,
+    filepath
   )
 VALUES
   (
@@ -52,5 +55,6 @@ VALUES
     "52821c98-2aba-11ef-82c2-0242ac130003",
     NOW (),
     "kayamakayamakayama",
-    NOW ()
+    NOW (),
+    "files/kayama-slide.pdf"
   );
