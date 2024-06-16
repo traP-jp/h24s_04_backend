@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 )
 
@@ -15,14 +16,16 @@ type fileUploadResponse struct {
 
 type ITransferFileService interface {
 	UploadFile(c echo.Context) error
+	Urlupdate()
 }
 
 type transferFileService struct {
 	uu storage.ITransferFile
+	db *sqlx.DB
 }
 
-func Service(uu storage.ITransferFile) ITransferFileService {
-	return &transferFileService{uu: uu}
+func Service(uu storage.ITransferFile, db *sqlx.DB) ITransferFileService {
+	return &transferFileService{uu: uu, db: db}
 }
 
 func (h *transferFileService) UploadFile(ctx echo.Context) error {
