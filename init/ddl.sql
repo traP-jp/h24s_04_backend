@@ -20,5 +20,5 @@ CREATE TABLE
     FOREIGN KEY (genre_id) REFERENCES Genre (id),
     posted_at DATETIME NOT NULL,
     description TEXT,
-    url_lastupdated DATETIME NOT NULL
+    url_updated_at DATETIME NOT NULL
   );

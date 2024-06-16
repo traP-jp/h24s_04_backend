@@ -13,7 +13,7 @@ INSERT INTO
     genre_id,
     posted_at,
     description,
-    url_lastupdated
+    url_updated_at
   )
 VALUES
   (
@@ -41,7 +41,7 @@ INSERT INTO
     genre_id,
     posted_at,
     description,
-    url_lastupdated
+    url_updated_at
   )
 VALUES
   (
