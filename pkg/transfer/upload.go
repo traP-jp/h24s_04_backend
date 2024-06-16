@@ -8,6 +8,7 @@ import (
 	"io"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 )
@@ -100,7 +101,8 @@ func (h *transferFileService) DownloadFile(ctx echo.Context) error {
 	}
 
 	dlfile = "files/" + dlfile
-	dltempname := slideid + ".pdf"
+	dltempid, _ := uuid.NewV7()
+	dltempname := dltempid.String() + ".pdf"
 
 	err = h.uu.DownloadFile(ctx.Request().Context(), dlfile, dltempname)
 	if err != nil {
