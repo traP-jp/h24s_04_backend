@@ -19,5 +19,6 @@ CREATE TABLE
     genre_id CHAR(36) NOT NULL,
     FOREIGN KEY (genre_id) REFERENCES Genre (id),
     posted_at DATETIME NOT NULL,
-    description TEXT
+    description TEXT,
+    url_lastupdated DATETIME NOT NULL
   );
