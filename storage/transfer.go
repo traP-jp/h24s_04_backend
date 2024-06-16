@@ -12,6 +12,7 @@ import (
 type ITransferFile interface {
 	UploadFile(ctx context.Context, fileData []byte, fileName string) (string, string, error)
 	UpdateURL(filePath string) (string, error)
+	DownloadFile(ctx context.Context, objectName string, destFileName string) error
 }
 
 type TransferFileService struct {
@@ -64,4 +65,20 @@ func (t *TransferFileService) UpdateURL(filePath string) (string, error) {
 	}
 
 	return url, nil
+}
+
+// downloadFile downloads an object to a file.
+func (t *TransferFileService) DownloadFile(ctx context.Context, objectName string, destFileName string) error {
+
+	if len(objectName) == 0 {
+		return errors.New("objectName cannot be empty")
+	}
+
+	bucketName := os.Getenv("FIREBASE_STORAGE_BUCKET")
+	err := t.storageClient.Download(ctx, bucketName, objectName, destFileName)
+	if err != nil {
+		return fmt.Errorf("failed to download from Firebase Storage: %v", err)
+	}
+	return nil
+
 }

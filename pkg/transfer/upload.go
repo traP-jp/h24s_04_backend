@@ -1,10 +1,14 @@
 package transfer
 
 import (
+	"database/sql"
+	"errors"
+	"fmt"
 	"h24s_04/storage"
 	"io"
 	"net/http"
 
+	"github.com/google/uuid"
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
 )
@@ -17,6 +21,7 @@ type fileUploadResponse struct {
 
 type ITransferFileService interface {
 	UploadFile(c echo.Context) error
+	DownloadFile(c echo.Context) error
 	Urlupdate()
 }
 
@@ -81,4 +86,28 @@ func (h *transferFileService) UploadFile(ctx echo.Context) error {
 	res.Path = path
 
 	return ctx.JSON(http.StatusOK, res)
+}
+
+func (h *transferFileService) DownloadFile(ctx echo.Context) error {
+
+	slideid := ctx.Param("slideid")
+	var dlfile string
+
+	err := h.db.Get(&dlfile, "SELECT `filepath` FROM `Slide` WHERE `id`=?", slideid)
+	if errors.Is(err, sql.ErrNoRows) {
+		return echo.NewHTTPError(http.StatusNotFound, fmt.Sprintf("%+v", err))
+	} else if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	}
+
+	dlfile = "files/" + dlfile
+	dltempid, _ := uuid.NewV7()
+	dltempname := dltempid.String() + ".pdf"
+
+	err = h.uu.DownloadFile(ctx.Request().Context(), dlfile, dltempname)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error downloadinging file: "+err.Error())
+	}
+
+	return ctx.File(dltempname)
 }

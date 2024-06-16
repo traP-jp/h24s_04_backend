@@ -55,6 +55,7 @@ func main() {
 	e.POST("/api/slides", ss.PostSlides)
 
 	e.POST("/api/upload", tr.UploadFile)
+	e.GET("/api/download/:slideid", tr.DownloadFile)
 
 	e.Start(":8080")
 }
