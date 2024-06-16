@@ -7,7 +7,8 @@ import (
 )
 
 type BotService struct {
-	bot *traqwsbot.Bot
+	bot           *traqwsbot.Bot
+	postChannelID string // := "122c14e6-c32a-43b3-b905-d2aeb0c0a23e"
 }
 
 func NewBot() *BotService {
@@ -17,19 +18,17 @@ func NewBot() *BotService {
 	if err != nil {
 		panic(err)
 	}
-	return &BotService{bot: bot}
+	return &BotService{bot: bot, postChannelID: "122c14e6-c32a-43b3-b905-d2aeb0c0a23e"}
 }
 
 func (s *BotService) Service() {
-
 	if err := s.bot.Start(); err != nil {
 		panic(err)
 	}
-
 }
 
-// ここにPOSTした時の挙動を書く 引数にtitleとか入れておくと良い
 
-func (s *BotService) PostNotify() {
-
+func (s *BotService) PostNotify(title string, slideid string) {
+	content := "New slide [**" + title + "**](https://h24s-04.trap.show/slides/" + slideid + ") has been posted :eyes:"
+	s.BotSimplePost(s.postChannelID, content)
 }

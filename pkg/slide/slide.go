@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"h24s_04/pkg/bot"
 	"h24s_04/pkg/model"
 	"net/http"
 	"time"
@@ -14,11 +15,12 @@ import (
 )
 
 type SlideService struct {
-	db *sqlx.DB
+	db         *sqlx.DB
+	botservice *bot.BotService
 }
 
-func Service(db *sqlx.DB) *SlideService {
-	return &SlideService{db: db}
+func Service(db *sqlx.DB, botservice *bot.BotService) *SlideService {
+	return &SlideService{db: db, botservice: botservice}
 }
 
 func (s *SlideService) GetSlides(ctx echo.Context) error {
@@ -34,7 +36,7 @@ func (s *SlideService) GetSlides(ctx echo.Context) error {
 	if sortorder == "" {
 		sortorder = "DESC"
 	}
- 	if sortorder != "ASC" && sortorder != "DESC" && sortorder != "" {
+	if sortorder != "ASC" && sortorder != "DESC" && sortorder != "" {
 		return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
 	}
 	err := s.db.Select(&slides, fmt.Sprintf("SELECT * FROM `Slide` ORDER BY %s %s", orderby, sortorder))
@@ -63,6 +65,7 @@ func (s *SlideService) PostSlides(ctx echo.Context) error {
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
+	s.botservice.PostNotify(slide.Title, slide.Id.String())
 	return ctx.JSON(http.StatusOK, slide)
 }
 

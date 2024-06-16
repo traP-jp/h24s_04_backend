@@ -9,6 +9,7 @@ require (
 	github.com/gofrs/uuid v4.4.0+incompatible
 	github.com/jmoiron/sqlx v1.4.0
 	github.com/labstack/echo/v4 v4.11.3
+	github.com/traPtitech/go-traq v0.0.0-20220426061605-adc15dcfc6d0
 	github.com/traPtitech/traq-ws-bot v1.1.3
 	google.golang.org/api v0.184.0
 )
@@ -38,7 +39,6 @@ require (
 	github.com/labstack/gommon v0.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
-	github.com/traPtitech/go-traq v0.0.0-20220426061605-adc15dcfc6d0 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	go.opencensus.io v0.24.0 // indirect

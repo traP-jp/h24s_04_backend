@@ -18,13 +18,14 @@ import (
 
 func main() {
 
-	go bot.NewBot().Service()
+	_bot := bot.NewBot()
+	go _bot.Service()
 
 	_db := setup.DBsetup()
 
 	gs := genre.Service(_db)
 
-	ss := slide.Service(_db)
+	ss := slide.Service(_db, _bot)
 	uu, err := storage.NewTransferFileService(context.Background())
 	if err != nil {
 		// エラーハンドリング: uploadは外部サービスを前提にしているので、接続できない場合はpanic
