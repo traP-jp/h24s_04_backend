@@ -47,12 +47,13 @@ func (s *SlideService) PostSlides(ctx echo.Context) error {
 
 	slide.Id, err = uuid.NewV7()
 	slide.Posted_at = time.Now()
+	slide.URL_updated_at = time.Now()
 
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
 
-	_, err = s.db.Exec("INSERT INTO `Slide` (`id`, `dl_url`, `thumb_url`, `title`, `genre_id`, `posted_at`, `description`) VALUES (?,?,?,?,?,?,?)", slide.Id, slide.DL_url, slide.Thumb_url, slide.Title, slide.Genre_id, slide.Posted_at, slide.Description)
+	_, err = s.db.Exec("INSERT INTO `Slide` (`id`, `dl_url`, `thumb_url`, `title`, `genre_id`, `posted_at`, `description`, `url_updated_at`, `filepath`) VALUES (?,?,?,?,?,?,?,?,?)", slide.Id, slide.DL_url, slide.Thumb_url, slide.Title, slide.Genre_id, slide.Posted_at, slide.Description, slide.URL_updated_at, slide.Filepath)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
 	}
@@ -87,6 +88,7 @@ func (s *SlideService) PatchSlidesSlideid(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusBadRequest, fmt.Sprintf("%+v", err))
 	}
 
+	// id, posted_at, url_updated_at, filepath は書き換えられない
 	_, err = s.db.Exec("UPDATE `Slide` SET `dl_url` = ?, `thumb_url` = ?, `title` = ?, `genre_id` = ?, `description` = ? WHERE `id` = ?", req.DL_url, req.Thumb_url, req.Title, req.Genre_id, req.Description, slideid)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
