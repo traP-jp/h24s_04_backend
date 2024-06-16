@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	ping "h24s_04/pkg/_ping"
+	"h24s_04/pkg/bot"
 	"h24s_04/pkg/genre"
 	"h24s_04/pkg/setup"
 
@@ -17,11 +18,14 @@ import (
 
 func main() {
 
+	_bot := bot.NewBot()
+	go _bot.Service()
+
 	_db := setup.DBsetup()
 
 	gs := genre.Service(_db)
 
-	ss := slide.Service(_db)
+	ss := slide.Service(_db, _bot)
 	uu, err := storage.NewTransferFileService(context.Background())
 	if err != nil {
 		// エラーハンドリング: uploadは外部サービスを前提にしているので、接続できない場合はpanic
