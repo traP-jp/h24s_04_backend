@@ -52,7 +52,9 @@ func (h *transferFileService) UploadFile(ctx echo.Context) error {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Could not read file")
 	}
 
-	fileName := file.Filename
+	filenametemp, _ := uuid.NewV7()
+
+	fileName := filenametemp.String() + ".pdf"
 	dl_url, path, err := h.uu.UploadFile(ctx.Request().Context(), fileData, fileName)
 	if err != nil {
 		return echo.NewHTTPError(http.StatusInternalServerError, "Error uploading file: "+err.Error())
