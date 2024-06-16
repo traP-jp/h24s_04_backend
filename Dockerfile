@@ -1,12 +1,14 @@
-FROM golang:latest
+# Go のベースイメージを指定
+FROM golang:1.20.5-alpine
 
-WORKDIR /src
-COPY ./src /src
+# コマンドを実行するコンテナ内のディレクトリをworkに指定
+WORKDIR /work
 
-RUN go mod tidy \
-  && go build -o ./main 
+# ローカルのカレントディレクトリをコンテナのカレントディレクトリ(work)にコピー
+COPY . .
 
-ENV CGO_ENABLED=0 \
-  GOOS=linux \
-  GOARCH=amd64
-EXPOSE 8080
+# Go のプログラムをビルド
+RUN go build -o app
+
+# ビルドしたものを実行
+ENTRYPOINT ./app

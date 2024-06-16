@@ -5,12 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"h24s_04/firebase"
+	"log"
 	"os"
 )
 
 type ITransferFile interface {
-	UploadFile(ctx context.Context, fileData []byte, fileName string) (string, error)
-	// ここにdownloadも書く
+	UploadFile(ctx context.Context, fileData []byte, fileName string) (string, string, error)
+	UpdateURL(filePath string) (string, error)
 }
 
 type TransferFileService struct {
@@ -35,9 +36,9 @@ func NewTransferFileService(ctx context.Context) (ITransferFile, error) {
 	}, nil
 }
 
-func (t *TransferFileService) UploadFile(ctx context.Context, fileData []byte, fileName string) (string, error) {
+func (t *TransferFileService) UploadFile(ctx context.Context, fileData []byte, fileName string) (string, string, error) {
 	if len(fileData) == 0 {
-		return "", errors.New("file data is empty")
+		return "", "", errors.New("file data is empty")
 	}
 
 	path := fmt.Sprintf("files/%s", fileName)
@@ -46,7 +47,20 @@ func (t *TransferFileService) UploadFile(ctx context.Context, fileData []byte, f
 	// firebase/storage.goの保存処理を呼び出す
 	url, err := t.storageClient.Upload(ctx, bucketName, fileData, path)
 	if err != nil {
-		return "", fmt.Errorf("failed to upload image to Firebase Storage: %v", err)
+		return "", "", fmt.Errorf("failed to upload image to Firebase Storage: %v", err)
+	}
+
+	return url, fileName, nil
+}
+
+func (t *TransferFileService) UpdateURL(filePath string) (string, error) {
+
+	bucketName := os.Getenv("FIREBASE_STORAGE_BUCKET")
+	log.Println(bucketName)
+
+	url, err := t.storageClient.GenerateSignedURL(bucketName, filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to get download url from Firebase Storage: %v", err)
 	}
 
 	return url, nil

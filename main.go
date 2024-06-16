@@ -11,7 +11,6 @@ import (
 
 	"h24s_04/pkg/slide"
 
-
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -28,35 +27,30 @@ func main() {
 		// エラーハンドリング: uploadは外部サービスを前提にしているので、接続できない場合はpanic
 		panic("failed to initialize UploadImageUsecase: " + err.Error())
 	}
-	tr := transfer.Service(uu)
+	tr := transfer.Service(uu, _db)
 
-
-
+	setup.Cronsetup(tr)
 
 	e := echo.New()
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
-	e.GET("/ping", ping.Ping)
+	e.GET("/api/ping", ping.Ping)
 
-	e.POST("/genres", gs.PostGenres)
-	e.GET("/genres/:genreid", gs.GetGenresGenreid)
-	e.GET("/genres", gs.GetGenres)
+	e.POST("/api/genres", gs.PostGenres)
+	e.GET("/api/genres/:genreid", gs.GetGenresGenreid)
+	e.GET("/api/genres", gs.GetGenres)
 
-	e.PATCH("/genres/:genreid", gs.PatchGenresGenreid)
-	e.DELETE("/genres/:genreid", gs.DeleteGenresGenreid)
+	e.PATCH("/api/genres/:genreid", gs.PatchGenresGenreid)
+	e.DELETE("/api/genres/:genreid", gs.DeleteGenresGenreid)
 
+	e.GET("/api/slides/:slideid", ss.GetSlidesSlideid)
+	e.DELETE("/api/slides/:slideid", ss.DeleteSlidesSlideid)
+	e.GET("/api/slides", ss.GetSlides)
+	e.PATCH("/api/slides/:slideid", ss.PatchSlidesSlideid)
+	e.POST("/api/slides", ss.PostSlides)
 
-
-
-	e.GET("/slides/:slideid", ss.GetSlidesSlideid)
-	e.DELETE("/slides/:slideid", ss.DeleteSlidesSlideid)
-	e.GET("/slides", ss.GetSlides)
-	e.PATCH("/slides/:slideid", ss.PatchSlidesSlideid)
-	e.POST("/slides", ss.PostSlides)
-
-
-  e.POST("/upload", tr.UploadFile)
+	e.POST("/api/upload", tr.UploadFile)
 
 	e.Start(":8080")
 }
