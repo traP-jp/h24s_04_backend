@@ -5,11 +5,13 @@ import (
 	"errors"
 	"fmt"
 	"h24s_04/firebase"
+	"log"
 	"os"
 )
 
 type ITransferFile interface {
 	UploadFile(ctx context.Context, fileData []byte, fileName string) (string, string, error)
+	UpdateURL(filePath string) (string, error)
 }
 
 type TransferFileService struct {
@@ -49,4 +51,17 @@ func (t *TransferFileService) UploadFile(ctx context.Context, fileData []byte, f
 	}
 
 	return url, path, nil
+}
+
+func (t *TransferFileService) UpdateURL(filePath string) (string, error) {
+
+	bucketName := os.Getenv("FIREBASE_STORAGE_BUCKET")
+	log.Println(bucketName)
+
+	url, err := t.storageClient.GenerateSignedURL(bucketName, filePath)
+	if err != nil {
+		return "", fmt.Errorf("failed to get download url from Firebase Storage: %v", err)
+	}
+
+	return url, nil
 }

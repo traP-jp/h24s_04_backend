@@ -11,6 +11,7 @@ require (
 	github.com/labstack/echo/v4 v4.11.3
 	github.com/traPtitech/go-traq v0.0.0-20220426061605-adc15dcfc6d0
 	github.com/traPtitech/traq-ws-bot v1.1.3
+	github.com/robfig/cron/v3 v3.0.1
 	google.golang.org/api v0.184.0
 )
 

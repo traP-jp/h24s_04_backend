@@ -31,7 +31,9 @@ func main() {
 		// エラーハンドリング: uploadは外部サービスを前提にしているので、接続できない場合はpanic
 		panic("failed to initialize UploadImageUsecase: " + err.Error())
 	}
-	tr := transfer.Service(uu)
+	tr := transfer.Service(uu, _db)
+
+	setup.Cronsetup(tr)
 
 	e := echo.New()
 
