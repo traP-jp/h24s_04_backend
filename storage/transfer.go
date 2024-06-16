@@ -12,6 +12,7 @@ import (
 type ITransferFile interface {
 	UploadFile(ctx context.Context, fileData []byte, fileName string) (string, string, error)
 	UpdateURL(filePath string) (string, error)
+	DownloadFile(ctx context.Context, objectName string, destFileName string) error
 }
 
 type TransferFileService struct {
