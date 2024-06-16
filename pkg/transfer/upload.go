@@ -8,6 +8,11 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+type fileUploadResponse struct {
+	URL  string `json:"url"`
+	Path string `json:"path"`
+}
+
 type ITransferFileService interface {
 	UploadFile(c echo.Context) error
 }
@@ -17,7 +22,7 @@ type transferFileService struct {
 }
 
 func Service(uu storage.ITransferFile) ITransferFileService {
-	return &transferFileService{uu}
+	return &transferFileService{uu: uu}
 }
 
 func (h *transferFileService) UploadFile(ctx echo.Context) error {
@@ -39,10 +44,14 @@ func (h *transferFileService) UploadFile(ctx echo.Context) error {
 	}
 
 	fileName := file.Filename
-	url, err := h.uu.UploadFile(ctx.Request().Context(), fileData, fileName)
+	url, path, err := h.uu.UploadFile(ctx.Request().Context(), fileData, fileName)
 	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, "Error uploading image: "+err.Error())
+		return echo.NewHTTPError(http.StatusInternalServerError, "Error uploading file: "+err.Error())
 	}
 
-	return ctx.String(http.StatusOK, url)
+	res := &fileUploadResponse{}
+	res.URL = url
+	res.Path = path
+
+	return ctx.JSON(http.StatusOK, res)
 }
