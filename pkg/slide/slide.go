@@ -25,23 +25,37 @@ func Service(db *sqlx.DB, botservice *bot.BotService) *SlideService {
 
 func (s *SlideService) GetSlides(ctx echo.Context) error {
 	var slides []model.Slide
-	orderby := ctx.QueryParam("orderby")
-	if orderby == "" {
-		orderby = "posted_at"
+	key := ctx.QueryParam("key")
+	if key == "" {
+		key = "posted_at"
 	}
-	if orderby != "genre_id" && orderby != "title" && orderby != "posted_at" {
-		return echo.NewHTTPError(http.StatusBadRequest, "`orderby` must equals `genre_id`, `title`, `posted_at` or ``.")
-	}
-	sortorder := ctx.QueryParam("sortorder")
-	if sortorder == "" {
-		sortorder = "DESC"
-	}
-	if sortorder != "ASC" && sortorder != "DESC" && sortorder != "" {
-		return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
-	}
-	err := s.db.Select(&slides, fmt.Sprintf("SELECT * FROM `Slide` ORDER BY %s %s", orderby, sortorder))
-	if err != nil {
-		return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+	switch key {
+	case "posted_at":
+		sortorder := ctx.QueryParam("sortorder")
+		if sortorder == "" {
+			sortorder = "DESC"
+		}
+		if sortorder != "ASC" && sortorder != "DESC" && sortorder != "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "`sortorder` must equals `ASC`, `DESC` or ``.")
+		}
+		err := s.db.Select(&slides, fmt.Sprintf("SELECT * FROM `Slide` ORDER BY posted_at %s", sortorder))
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+		}
+	case "title":
+		title := ctx.QueryParam("title")
+		err := s.db.Select(&slides, "SELECT * FROM `Slide` WHERE `title` = ?", title)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+		}
+	case "genre":
+		genre := ctx.QueryParam("genre")
+		err := s.db.Select(&slides, "SELECT * FROM `Slide` WHERE `genre_id` = ?", genre)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusInternalServerError, fmt.Sprintf("%+v", err))
+		}
+	default:
+		return echo.NewHTTPError(http.StatusBadRequest, "`key` must equals to `genre_id`, `title`, `posted_at` or ``.")
 	}
 	return ctx.JSON(http.StatusOK, slides)
 }
