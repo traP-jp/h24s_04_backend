@@ -63,7 +63,7 @@ func (fs *FirebaseStorage) generateSignedURL(ctx context.Context, bucketName, ob
 	opts := &cs.SignedURLOptions{
 		Scheme:  cs.SigningSchemeV4,
 		Method:  "GET",
-		Expires: time.Now().Add(15 * time.Minute), // 有効期限
+		Expires: time.Now().Add(15 * time.Minute), // 有効期限 7日間ごとに更新
 	}
 
 	// 署名付きURLを生成
@@ -73,10 +73,12 @@ func (fs *FirebaseStorage) generateSignedURL(ctx context.Context, bucketName, ob
 	}
 
 	u, err := bucket.SignedURL(objectName, opts)
+
 	if err != nil {
 		return "", fmt.Errorf("Bucket(%q).SignedURL: %w", bucket, err)
 	}
 	fmt.Printf("Generated GET signed URL:\n%s\n", u)
 
+	u += "\n"
 	return u, nil
 }
